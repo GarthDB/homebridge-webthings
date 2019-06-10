@@ -1,0 +1,26 @@
+{
+  "name": "homebridge-webthings",
+  "version": "0.1.0",
+  "description": "Homebridge plugin for Web Things (Mozilla IoT Gateway)",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "iot",
+    "wot",
+    "mozilla-iot",
+    "webthings"
+  ],
+  "author": "Garth Braithwaite <garthdb@gmail.com> (http://garthdb.com)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GarthDB/homebridge-webthings.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GarthDB/homebridge-webthings/issues"
+  },
+  "homepage": "https://github.com/GarthDB/homebridge-webthings#readme"
+}
