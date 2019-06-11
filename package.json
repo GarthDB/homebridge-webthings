@@ -2,8 +2,10 @@
   "name": "homebridge-webthings",
   "version": "0.1.0",
   "description": "Homebridge plugin for Web Things (Mozilla IoT Gateway)",
-  "main": "dist/index.js",
+  "main": "src/index.js",
+  "preferGlobal": true,
   "scripts": {
+    "compile": "parcel build src/index.js --target node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -13,6 +15,10 @@
     "mozilla-iot",
     "webthings"
   ],
+  "engines": {
+    "node": ">=8.9.0",
+    "homebridge": ">=0.4.38"
+  },
   "author": "Garth Braithwaite <garthdb@gmail.com> (http://garthdb.com)",
   "license": "Apache-2.0",
   "repository": {
@@ -22,5 +28,16 @@
   "bugs": {
     "url": "https://github.com/GarthDB/homebridge-webthings/issues"
   },
-  "homepage": "https://github.com/GarthDB/homebridge-webthings#readme"
+  "homepage": "https://github.com/GarthDB/homebridge-webthings#readme",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "parcel-bundler": "^1.12.3",
+    "prettier": "^1.18.2"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "ws": "^7.0.0"
+  }
 }
