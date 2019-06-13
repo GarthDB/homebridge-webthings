@@ -1,44 +1,61 @@
-const fetch = require("node-fetch");
+const WoTClient = require("./WoTClient");
 
 module.exports = class WoTPlatform {
   constructor(log, config, api) {
     log("WoT Platform Init");
     const platform = this;
-    this.log = log;
-    this.config = config;
-    this.accessories = [];
+    Object.assign(this, {
+      config,
+      log,
+      accessories: [],
+      client: new WoTClient(log, config)
+    });
     if (api) {
       this.api = api;
-      this.api.on('didFinishLaunching', function() {
-        platform.log("DidFinishLaunching");
-      }.bind(this));
+      this.api.on("didFinishLaunching", this.didFinishLaunching.bind(this));
     }
   }
   configureAccessory(accessory) {
-    if (!this.accessories) {
-      return;
+    this.log(accessory)
+  }
+  async refreshDevices() {
+    try {
+      this.log('refreshing devices')
+      const devices = await this.client.getDevices();
+      const accessories = devices.map(device => {
+        return this.convertDeviceToAccessory(device);
+      })
+      console.log(this.api.hap)
+    } catch (e) {
+      this.log.error("Failed to refresh devices.", e);
     }
   }
-  // accessories(callback) {
-  //   const foundAccessories = [];
-  //   const getData = async url => {
-  //     try {
-  //       const response = await fetch(url, {
-  //         headers: {
-  //           Accept: 'application/json',
-  //           Authorization: `Bearer ${this.config.auth_token}`
-  //         }
-  //       });
-  //       const json = await response.json();
-  //       console.log(json);
-  //       callback(foundAccessories);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getData(`${this.config.base_url}things`);
-  // }
   async didFinishLaunching() {
-    console.log('finished lauching');
+    this.log('finished lauching');
+    this.interval = setInterval(() => this.refreshDevices(), 60 * 60 * 1000);
+    this.refreshDevices();
+  }
+  convertDeviceToAccessory(device) {
+    const { uuid } = this.api.hap;
+    const deviceId = uuid.generate(device.href);
+    const accessory = new this.api.platformAccessory(device.name, deviceId);
+    accessory.context = device;
+    return accessory;
+  }
+  patchAccessory(accessory, device) {
+    if (device) {
+      accessory.context = device;
+    }
+    accessory.definition = this.accessoryHelper.getDefinition(
+      accessory.context
+    );
+    Object.defineProperty(accessory, "merged_state", {
+      get: function() {
+        return {
+          ...this.context.last_reading,
+          ...this.context.desired_state
+        };
+      }
+    });
   }
 }
